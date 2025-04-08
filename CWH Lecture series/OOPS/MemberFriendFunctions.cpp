@@ -13,8 +13,6 @@ class calculator{
 
 };
 
-
-
 class complex{
     int a, b;
     friend int calculator::sumComplex(complex, complex);
