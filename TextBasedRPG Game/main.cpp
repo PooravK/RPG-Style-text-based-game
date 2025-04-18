@@ -79,9 +79,20 @@ class player
             cout << "3 - Healer" << endl;
             cout << "4 - Thief" << endl;
             cout << endl;
-            cout << "Enter the class you want (1 2 3 4) - ";
-            cin >> player_Class;
-            cout << endl;
+            int condn = 0;
+            while (condn == 0)
+            {
+                cout << "Choose a desired class: ";
+                cin >> player_Class;
+                if (player_Class == 1 || player_Class == 2 || player_Class == 3 || player_Class == 4)
+                {
+                    condn = 1;
+                }
+                else
+                {
+                    cout << "Invalid input. Please enter from 1 to 4" << endl;
+                }
+            }
 
             if (player_Class == 1)
             {
