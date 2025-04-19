@@ -22,6 +22,11 @@ class player
         int base_speed;
         int base_defense;
         int base_health;
+
+        //Levelling  up system
+        int floor_level;
+        int player_level = 0;
+        int enemies_defeated = 0;
         int base_level;
         
         //For calculation of stats after point assignment
@@ -58,6 +63,10 @@ class player
         //To Show stats and level of the player:
         void show_Stats()
         {
+            strengthPnt = 0;
+            healthPnt = 0;
+            speedPnt = 0;
+            defensePnt = 0;
             cout << endl;
             cout << "- - - - - - STAT WINDOW - - - - - -" << endl;
             cout << "Player name: " << player_Name << endl;
@@ -135,13 +144,77 @@ class player
                 base_level = 0;
             }
         }
+        int level_up()
+        {
+            player_level = player_level + 1;
+            cout << endl;
+            cout << "Congratulations, You have levelled up! You can now add 3 points to any of your base stats: " << endl;
+            int statChosen;
+
+            for (int i = 0; i < 3; i++)
+            {
+                int condn_level = 0;
+                strengthPnt = 0;
+                healthPnt = 0;
+                speedPnt = 0;
+                defensePnt = 0;
+                show_Stats();
+
+                while (condn_level == 0)
+                {
+                    cout << endl;
+                    cout << "Where do you want to get stronger?" << endl;
+                    cout << "1 - Health" << endl;
+                    cout << "2 - Strength" << endl;
+                    cout << "3 - Defense" << endl;
+                    cout << "4 - Speed" << endl;
+                    cout << endl;
+                    cout << "Enter from 1 2 3 4 - ";
+                    cin >> statChosen;
+                    if (statChosen == 1 || statChosen == 2 || statChosen == 3 || statChosen == 4)
+                    {
+                        condn_level = 1;
+                    }
+                    else
+                    {
+                        cout << "Invalid input. " << endl;
+                        condn_level = 0;
+                    }
+                }
+                if (statChosen == 1)
+                {
+                    healthPnt++;
+                    get_FinalHealth();
+                }
+                else if (statChosen == 2)
+                {
+                    strengthPnt++;
+                    get_FinalStrength();
+                }
+                else if (statChosen == 3)
+                {
+                    defensePnt++;
+                    get_FinalDefense();
+                }
+                else
+                {
+                    speedPnt++;
+                    get_FinalSpeed();
+                }
+            }
+            show_Stats();
+        }
 };
 
 int main()
 {
     player p;
+
     p.player_Info();
     p.choose_Class();
-    p.show_Stats();
+    //p.show_Stats();
+
+    p.level_up();   
+    p.level_up();
     return 0;
 }
