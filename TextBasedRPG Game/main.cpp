@@ -1,10 +1,32 @@
 #include <iostream>
 #include <string>
+#include <vector>
 using namespace std;
 
-class player
+class charactor
 {
     public:
+        int base_strength;
+        int base_speed;
+        int base_defense;
+        int base_health;
+
+        int strengthPnt = 0;
+        int healthPnt = 0;
+        int speedPnt = 0;
+        int defensePnt = 0;
+
+        //COnstructor to initialize stats for enemy class
+        charactor(int st, int sp, int de, int he) : 
+            base_strength(st), base_defense(de), base_speed(sp), base_health(he) {}
+};
+
+class player : public charactor
+{
+    public:
+        //To default the charactor constructor
+        player() : charactor(0, 0, 0, 0) {}
+
         //Player name, class and inventory
         string player_Name;
         int player_Class;
@@ -12,7 +34,7 @@ class player
         string item_InHand;
 
         //Initial stats of the player
-        int strengthPnt = 0;
+        /*int strengthPnt = 0;
         int healthPnt = 0;
         int speedPnt = 0;
         int defensePnt = 0;
@@ -21,7 +43,7 @@ class player
         int base_strength;
         int base_speed;
         int base_defense;
-        int base_health;
+        int base_health;*/
 
         //Levelling  up system
         int floor_level;
@@ -206,15 +228,57 @@ class player
         }
 };
 
+class enemy : public charactor
+{
+        public:
+            int ID;
+            string enemy_name;
+
+            enemy(string n, int id, int st, int sp, int de, int he) :
+                charactor(st, sp, de, he), enemy_name(n), ID(id) {}
+        
+            void level_condition(player& p)
+            {
+                if (p.enemies_defeated == 3)
+                {
+                    p.level_up();
+                    p.enemies_defeated = 0;
+                }
+            }
+};
+
 int main()
 {
-    player p;
+    player pl;
+    //Creating a vector array to store all enemy IDs and their stats
+    vector <enemy> enemy_list = 
+    {
+        enemy("Slime", 0, 5, 4, 7, 100),
+        enemy("Goblin", 1, 8, 11, 4, 50),
+        enemy("Skeleton", 2, 7, 7, 6, 70),
+        enemy("Bat", 3, 4, 13, 3, 40),
+        enemy("Wolf", 4, 8, 10, 4, 90),
+        enemy("Zombie", 5, 9, 3, 10, 130),
+        enemy("Bandit", 6, 11, 8, 7, 100),
+        enemy("Witch", 7, 12, 8, 4, 70),
+        enemy("Rock Golem", 8, 9, 3, 14, 140),
+        enemy("Fire Imp", 9, 11, 10, 3, 90),
+        enemy("Ice spirit", 10, 9, 8, 6, 60),
+        enemy("Shadowling", 11, 8, 14, 2, 40),
+        enemy("Mimic", 12, 12, 8, 10, 100),
+        enemy("Scarecrow", 13, 9, 5, 7, 100),
+        enemy("Troll", 14, 15, 4, 9, 150),
+        enemy("Harpy", 15, 8, 11, 4, 80),
+        enemy("Dark Knight", 16, 16, 9, 4, 130),
+        enemy("Cultist", 17, 5, 7, 3, 60),
+        enemy("Plague Rat", 18, 8, 11, 4, 60),
+        enemy("Mirror Image", 19, 6, 8, 2, 50),
+    };
 
-    p.player_Info();
-    p.choose_Class();
+    pl.player_Info();
+    pl.choose_Class();
     //p.show_Stats();
 
-    p.level_up();   
-    p.level_up();
+    pl.level_up();   
     return 0;
 }
