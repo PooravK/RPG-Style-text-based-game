@@ -150,40 +150,40 @@ class player : public charactor
             {
                 class_Name = "Warrior";
                 item_InHand = "Broken sword";
-                base_strength = 8;
-                base_speed = 0;
-                base_health = 20;
-                base_defense = 5;
+                base_strength = 12;
+                base_speed = 6;
+                base_health = 100;
+                base_defense = 10;
                 base_level = 0;
             }
             else if (player_Class == 2)
             {
                 class_Name = "Archer";
                 item_InHand = "Worn out bow";
-                base_strength = 1;
-                base_speed = 8;
-                base_health = 20;
-                base_defense = 0;
+                base_strength = 9;
+                base_speed = 12;
+                base_health = 80;
+                base_defense = 4;
                 base_level = 0;
             }
             else if (player_Class == 3)
             {
                 class_Name = "Healer";
                 item_InHand = "Tattered robes";
-                base_strength = 1;
-                base_speed = 0;
-                base_health = 40;
-                base_defense = 0;
+                base_strength = 7;
+                base_speed = 9;
+                base_health = 70;
+                base_defense = 3;
                 base_level = 0;
             }
             else if (player_Class == 4)
             {
                 class_Name = "Thief";
                 item_InHand = "Empty handed";
-                base_strength = 1;
-                base_speed = 20;
-                base_health = 20;
-                base_defense = 0;
+                base_strength = 9;
+                base_speed = 13;
+                base_health = 75;
+                base_defense = 4;
                 base_level = 0;
             }
         }
@@ -305,43 +305,41 @@ class enemy : public charactor
                     cin >> battle_choice;
                     cout << endl;
 
-                    if (battle_choice == 1)
+
+                    bool player_turn = p.get_FinalSpeed() >= selected_enemy.get_finalSpeed();
+
+                    int damage_ToEnemy = max(0, (p.get_FinalStrength() - selected_enemy.get_finalDefense()));
+                    int damage_ToPlayer = max(0, (selected_enemy.get_finalStrength() - p.get_FinalDefense()));
+
+                    if (player_turn)
                     {
-                        bool player_turn = p.get_FinalSpeed() >= selected_enemy.get_finalSpeed();
-
-                        int damage_ToEnemy = max(0, (p.get_FinalStrength() - selected_enemy.get_finalDefense()));
-                        int damage_ToPlayer = max(0, (selected_enemy.get_finalStrength() - p.get_FinalDefense()));
-
-                        if (player_turn)
-                        {
-                            selected_enemy.reduce_Health(damage_ToEnemy);
-                            p.reduce_Health(damage_ToPlayer);
-                            cout << "Player moves first!" << endl;
-                            cout << "Damage by player: " << damage_ToEnemy << endl;
-                            cout << "Damage by enemy: " << damage_ToPlayer << endl;
-                        }
-                        else
-                        {
-                            p.reduce_Health(damage_ToPlayer);
-                            selected_enemy.reduce_Health(damage_ToPlayer);
-                            cout << "Enemy moves first!" << endl;
-                            cout << "Damage by enemy: " << damage_ToPlayer << endl;
-                            cout << "Damage by player: " << damage_ToEnemy << endl;
-                        }
-                    }
-                }
-
-                    if (p.get_FinalHealth() != 0)
-                    {
-                        cout << "You have defeated " << selected_enemy.enemy_name << "!";
-                        p.enemies_defeated++;
+                        selected_enemy.reduce_Health(damage_ToEnemy);
+                        p.reduce_Health(damage_ToPlayer);
+                        cout << "Player moves first!" << endl;
+                        cout << "Damage by player: " << damage_ToEnemy << endl;
+                        cout << "Damage by enemy: " << damage_ToPlayer << endl;
                     }
                     else
                     {
-                        cout << "You were defeated by " << selected_enemy.enemy_name << "!";
-                        p.floor_level--;
+                        p.reduce_Health(damage_ToPlayer);
+                        selected_enemy.reduce_Health(damage_ToPlayer);
+                        cout << "Enemy moves first!" << endl;
+                        cout << "Damage by enemy: " << damage_ToPlayer << endl;
+                        cout << "Damage by player: " << damage_ToEnemy << endl;
                     }
                 }
+
+                if (p.get_FinalHealth() != 0)
+                {
+                    cout << "You have defeated " << selected_enemy.enemy_name << "!";
+                    p.enemies_defeated++;
+                }
+                else
+                {
+                    cout << "You were defeated by " << selected_enemy.enemy_name << "!";
+                    p.floor_level--;
+                }
+             }
 };
 
 int main()
