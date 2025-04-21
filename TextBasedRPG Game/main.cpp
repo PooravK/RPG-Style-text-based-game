@@ -1,20 +1,39 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <random>
+#include <ctime>
 using namespace std;
 
 class charactor
 {
     public:
-        int base_strength;
-        int base_speed;
-        int base_defense;
-        int base_health;
+        int base_strength = 0;
+        int base_speed = 0;
+        int base_defense = 0;
+        int base_health = 0;
 
         int strengthPnt = 0;
         int healthPnt = 0;
         int speedPnt = 0;
         int defensePnt = 0;
+
+        int get_finalHealth()
+        {
+            return base_health + healthPnt;
+        }
+        int get_finalStrength()
+        {
+            return base_strength + strengthPnt;
+        }
+        int get_finalDefense()
+        {
+            return base_defense + defensePnt;
+        }
+        int get_finalSpeed()
+        {
+            return base_speed + speedPnt;
+        }
 
         //COnstructor to initialize stats for enemy class
         charactor(int st, int sp, int de, int he) : 
@@ -50,27 +69,29 @@ class player : public charactor
         int player_level = 0;
         int enemies_defeated = 0;
         int base_level;
+
+        //Damage calculation for battle menu
+        void reduce_Health(int damage)
+        {
+            base_health = max(0, get_FinalHealth() - damage);
+        }
         
         //For calculation of stats after point assignment
         int get_FinalStrength()
         {
-            base_strength = base_strength + strengthPnt;
-            return base_strength;
+            return base_strength + strengthPnt;
         }
         int get_FinalSpeed()
         {
-            base_speed = base_speed + speedPnt;
-            return base_speed;
+            return base_speed + speedPnt;
         }
         int get_FinalHealth()
         {
-            base_health = base_health + healthPnt;
-            return base_health;
+            return base_health + healthPnt;
         }
         int get_FinalDefense()
         {
-            base_defense = base_defense + defensePnt;
-            return base_defense;
+            return base_defense + defensePnt;
         }
         //To input player name:
         void player_Info()
@@ -234,8 +255,16 @@ class enemy : public charactor
             int ID;
             string enemy_name;
 
+            enemy() : charactor(0, 0, 0, 0), ID(0), enemy_name("Unknown") {}
+
             enemy(string n, int id, int st, int sp, int de, int he) :
                 charactor(st, sp, de, he), enemy_name(n), ID(id) {}
+
+            //Health reduction function
+            void reduce_Health(int damage)
+            {
+                base_health = max(0, get_finalHealth() - damage);
+            }
         
             void level_condition(player& p)
             {
@@ -245,11 +274,82 @@ class enemy : public charactor
                     p.enemies_defeated = 0;
                 }
             }
+
+            void battle_begin(player&p, vector<enemy>&enemy_list)
+            {
+
+            }
+
+            void battle_menu(player&p, vector<enemy>&enemy_list)
+            {
+                int battle_choice;
+                int rand_ID = rand() % enemy_list.size();
+                enemy& selected_enemy = enemy_list[rand_ID];
+                cout << endl;
+                cout << "You have encountered an enemy! What do you want to do?" << endl;
+
+                while (p.get_FinalHealth() != 0 && selected_enemy.get_finalHealth() != 0)
+                {
+                    cout << endl;
+                    cout << "Enemy Name: " << selected_enemy.enemy_name << endl;
+                    cout << "Enemy Health: " << selected_enemy.get_finalHealth() << endl;;
+                    cout << endl;
+                    cout << "Player Name: " << p.player_Name << endl;
+                    cout << "Player Health: " << p.get_FinalHealth() << endl;;
+                    cout << endl;
+                    cout << "1 - Attack" << endl;
+                    cout << "2 - View enemy stats" << endl;
+                    cout << "3 - Drink health potion" << endl;
+                    cout << "4 - Run" << endl;
+                    cout << "Enter your choice 1 2 3 4: ";
+                    cin >> battle_choice;
+                    cout << endl;
+
+                    if (battle_choice == 1)
+                    {
+                        bool player_turn = p.get_FinalSpeed() >= selected_enemy.get_finalSpeed();
+
+                        int damage_ToEnemy = max(0, (p.get_FinalStrength() - selected_enemy.get_finalDefense()));
+                        int damage_ToPlayer = max(0, (selected_enemy.get_finalStrength() - p.get_FinalDefense()));
+
+                        if (player_turn)
+                        {
+                            selected_enemy.reduce_Health(damage_ToEnemy);
+                            p.reduce_Health(damage_ToPlayer);
+                            cout << "Player moves first!" << endl;
+                            cout << "Damage by player: " << damage_ToEnemy << endl;
+                            cout << "Damage by enemy: " << damage_ToPlayer << endl;
+                        }
+                        else
+                        {
+                            p.reduce_Health(damage_ToPlayer);
+                            selected_enemy.reduce_Health(damage_ToPlayer);
+                            cout << "Enemy moves first!" << endl;
+                            cout << "Damage by enemy: " << damage_ToPlayer << endl;
+                            cout << "Damage by player: " << damage_ToEnemy << endl;
+                        }
+                    }
+                }
+
+                    if (p.get_FinalHealth() != 0)
+                    {
+                        cout << "You have defeated " << selected_enemy.enemy_name << "!";
+                        p.enemies_defeated++;
+                    }
+                    else
+                    {
+                        cout << "You were defeated by " << selected_enemy.enemy_name << "!";
+                        p.floor_level--;
+                    }
+                }
 };
 
 int main()
 {
     player pl;
+    enemy en;
+    //Seeding the generator
+    srand(static_cast<unsigned>(time(0)));
     //Creating a vector array to store all enemy IDs and their stats
     vector <enemy> enemy_list = 
     {
@@ -279,6 +379,7 @@ int main()
     pl.choose_Class();
     //p.show_Stats();
 
-    pl.level_up();   
+    //pl.level_up();
+    en.battle_menu(pl, enemy_list);
     return 0;
 }
