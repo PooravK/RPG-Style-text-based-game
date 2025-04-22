@@ -283,13 +283,17 @@ class enemy : public charactor
             void battle_menu(player&p, vector<enemy>&enemy_list)
             {
                 int battle_choice;
+
+                //Random enemy ID selection
                 int rand_ID = rand() % enemy_list.size();
                 enemy& selected_enemy = enemy_list[rand_ID];
+
                 cout << endl;
                 cout << "You have encountered an enemy! What do you want to do?" << endl;
 
                 while (p.get_FinalHealth() != 0 && selected_enemy.get_finalHealth() != 0)
                 {
+
                     cout << endl;
                     cout << "Enemy Name: " << selected_enemy.enemy_name << endl;
                     cout << "Enemy Health: " << selected_enemy.get_finalHealth() << endl;;
@@ -305,39 +309,75 @@ class enemy : public charactor
                     cin >> battle_choice;
                     cout << endl;
 
-
-                    bool player_turn = p.get_FinalSpeed() >= selected_enemy.get_finalSpeed();
-
-                    int damage_ToEnemy = max(0, (p.get_FinalStrength() - selected_enemy.get_finalDefense()));
-                    int damage_ToPlayer = max(0, (selected_enemy.get_finalStrength() - p.get_FinalDefense()));
-
-                    if (player_turn)
+                    if (battle_choice == 1)
                     {
-                        selected_enemy.reduce_Health(damage_ToEnemy);
-                        p.reduce_Health(damage_ToPlayer);
-                        cout << "Player moves first!" << endl;
-                        cout << "Damage by player: " << damage_ToEnemy << endl;
-                        cout << "Damage by enemy: " << damage_ToPlayer << endl;
+                        bool player_turn = p.get_FinalSpeed() >= selected_enemy.get_finalSpeed();
+
+                        int damage_ToEnemy = max(0, (p.get_FinalStrength() - selected_enemy.get_finalDefense()));
+                        int damage_ToPlayer = max(0, (selected_enemy.get_finalStrength() - p.get_FinalDefense()));
+
+                        if (player_turn)
+                        {
+                            //Critical hit chance ofr player turn
+                            int crit_chance = rand() % 100;
+                            if (crit_chance < 25)
+                            {
+                                cout << endl;
+                                cout << "Critical hit! Damage doubled" << endl;
+                                damage_ToEnemy = max(0, (2 * (p.get_FinalStrength() - selected_enemy.get_finalDefense())));
+                            }
+                            selected_enemy.reduce_Health(damage_ToEnemy);
+                            p.reduce_Health(damage_ToPlayer);
+                            cout << "Player moves first!" << endl;
+                            cout << "Damage by player: " << damage_ToEnemy << endl;
+                            cout << "Damage by enemy: " << damage_ToPlayer << endl;
+                        }
+                        else
+                        {
+                            //Critical hit chance for enemy turn
+                            int crit_chance = rand() % 100;
+                            if (crit_chance < 25)
+                            {
+                                cout << endl;
+                                cout << "Critical hit! Damage doubled" << endl;
+                                damage_ToEnemy = max(0, (2*(p.get_FinalStrength() - selected_enemy.get_finalDefense())));
+                            }
+                            p.reduce_Health(damage_ToPlayer);
+                            selected_enemy.reduce_Health(damage_ToEnemy);
+                            cout << "Enemy moves first!" << endl;
+                            cout << "Damage by enemy: " << damage_ToPlayer << endl;
+                            cout << "Damage by player: " << damage_ToEnemy << endl;
+                        }
                     }
-                    else
+                    else if (battle_choice == 2)
                     {
-                        p.reduce_Health(damage_ToPlayer);
-                        selected_enemy.reduce_Health(damage_ToPlayer);
-                        cout << "Enemy moves first!" << endl;
-                        cout << "Damage by enemy: " << damage_ToPlayer << endl;
-                        cout << "Damage by player: " << damage_ToEnemy << endl;
+                        cout << endl;
+                        cout << "- - - - - - Enemy Stats - - - - - -" << endl;
+                        cout << "Enemy Name: " << selected_enemy.enemy_name << endl;
+                        cout << "Health left: " << selected_enemy.get_finalHealth() << endl;
+                        cout << "Strength: " << selected_enemy.get_finalStrength() << endl;
+                        cout << "Defense: " << selected_enemy.get_finalDefense() << endl;
+                        cout << "Speed: " << selected_enemy.get_finalSpeed() << endl;
+                        cout << endl;
+                    }
+                    else if (battle_choice == 4)
+                    {
+                        cout << endl;
+                        cout << "You decided to run away!" << endl;
+                        break;
                     }
                 }
 
-                if (p.get_FinalHealth() != 0)
+                if (p.get_FinalHealth() != 0 && battle_choice == 1)
                 {
+                    cout << endl;
                     cout << "You have defeated " << selected_enemy.enemy_name << "!";
                     p.enemies_defeated++;
                 }
-                else
+                else if (selected_enemy.get_finalHealth() != 0 && battle_choice == 1)
                 {
+                    cout << endl;
                     cout << "You were defeated by " << selected_enemy.enemy_name << "!";
-                    p.floor_level--;
                 }
              }
 };
