@@ -382,6 +382,29 @@ class enemy : public charactor
              }
 };
 
+class item
+{
+    public:
+        string item_name;
+        int bonus_strength;
+        int bonus_speed;
+        int bonus_defense;
+        int bonus_health;
+        int item_price;
+        string potion_name;
+        int health_regen;
+        int strength_regen;
+        int defense_regen;
+        int speed_regen;
+        int potion_price;
+
+        item (string n, int bstr, int bspe, int bdef, int bhea, int price) :
+            item_name(n), bonus_strength(bstr), bonus_speed(bspe), bonus_defense(bdef), bonus_health(bhea), item_price(price){}
+        
+        item(string n1, int heregen, int stregen, int deregen, int spregen, int p_price) :
+            potion_name(n1), health_regen(heregen), strength_regen(stregen), speed_regen(spregen), defense_regen(deregen), potion_price(p_price){}
+};
+
 int main()
 {
     player pl;
@@ -411,6 +434,31 @@ int main()
         enemy("Cultist", 17, 5, 7, 3, 60),
         enemy("Plague Rat", 18, 8, 11, 4, 60),
         enemy("Mirror Image", 19, 6, 8, 2, 50),
+    };
+
+    vector <item> item_list = 
+    {
+        item("Rusty Dagger", 2, 1, 0, 0, 100),
+        item("Iron Sword", 4, 0, 0, 0, 100),
+        item("Twin Blades", 3, 3, 0, 0, 100),
+        item("Spiked club", 6, -1, 0, 0, 100),
+        item("Knight's longsword", 7, 0, 0, 0, 100),
+        item("Flame blade", 5, 2, 0, 0, 100),
+        item("Doom hammer", 10, -2, 0, 0, 100),
+        item("Runesteel Katana", 9, 4, 0, 0, 100),
+        item("Bloodfang axe", 13, -3, 0, 0, 100),
+        item("Celestial Blade (LEGENDARY)", 15, 5, -3, 0, 100),
+        item("Leather Vest", 0, 0, 2, 0, 100),
+        item("Chainmail Armor", 0, 0, 5, 0, 100),
+        item("Stonehide Plate", 0, -1, 8, 0, 100),
+        item("Mage Cloak", 0, 3, 3, 0, 100),
+        item("Dragonbone Armor", 0, -2, 12, 5, 100),
+        item("Void aeiges (LEGENDARY)", -2, -3, 16, 10, 100),
+    };
+
+    vector <item> potion_list = 
+    {
+        item("Minor health potion", 20, 0, 0, 0, 100),
     };
 
     pl.player_Info();
